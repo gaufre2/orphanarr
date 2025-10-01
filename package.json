@@ -1,24 +1,22 @@
 {
   "name": "orphanarr",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/main.ts",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.17.1",
-  "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "eslint": "^9.36.0",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.1",
-    "vitest": "^3.2.4"
+    "start": "bun run src/main.ts",
+    "watch": "bun run --watch src/main.ts"
   },
   "dependencies": {
-    "@ctrl/qbittorrent": "^9.8.0",
-    "tsarr": "^1.8.0"
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0",
+    "typescript-eslint": "^8.45.0"
+  },
+  "peerDependencies": {
+    "bun": "^1.2.23",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.23"
   }
 }
