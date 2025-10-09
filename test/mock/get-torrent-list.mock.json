@@ -1,0 +1,82 @@
+[
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithLinks",
+    "hash": "c638a9dd2fea4b33c6364e3f09896d7504ffcce6",
+    "name": "SeriesWithLinks",
+    "tags": "OtherTagName1, OtherTagName2",
+    "useless_parameter": true
+  },
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithoutLinksButProtected",
+    "hash": "eb0da1e081c33a0fbea8ee1ac1a5692fe9a39c10",
+    "name": "SeriesWithoutLinksButToKeep",
+    "tags": "orphanarr.protected, OtherTagName1",
+    "useless_parameter": true
+  },
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithoutLinksToDelete",
+    "hash": "b40322ebaed9e1c436d1bdf9385a8f00930bbedb",
+    "name": "SeriesWithoutLinksToDelete",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinks.mkv",
+    "hash": "eb864b63e6a2cdfa965127c26d5b7480305625f5",
+    "name": "MovieWithLinks.mkv",
+    "tags": "OtherTagName1, OtherTagName2, OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinksInAFolder",
+    "hash": "e6d851436a7a82f93b2884bcbb4735badae3d5ad",
+    "name": "MovieWithLinksInAFolder",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinksButPreviouslyTaggedToDelete.mkv",
+    "hash": "245e38cbcc967ddedc6187ac5d7b0ed64df4012b",
+    "name": "MovieWithLinksButPreviouslyTagToDelete.mkv",
+    "tags": "orphanarr.to-delete",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithoutLinksButProtected.mkv",
+    "hash": "ab147a505e363144f3698577220f2f1f6b08af7a",
+    "name": "MovieWithoutLinksButProtected.mkv",
+    "tags": "orphanarr.protected",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithoutLinksButUnwatchExtension.iso",
+    "hash": "952c26f925fde6664c00988b677c1fd578ebfd80",
+    "name": "MovieWithoutLinksButUnwatchExtension.iso",
+    "tags": "",
+    "useless_parameter": true
+  },
+  {
+    "category": "Other",
+    "content_path": "/completed/other/MovieFromUnwatchedCategory.mkv",
+    "hash": "4f6cc180b2b21c692e9eca2926847a13e66ff518",
+    "name": "MovieFromUnwatchedCategory.mkv",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "",
+    "content_path": "/completed/Uncategorized.mkv",
+    "hash": "e7d02dfc6c0c8691705fb0fb9d285e0355a49e2c",
+    "name": "Uncategorized.mkv",
+    "tags": "",
+    "useless_parameter": true
+  }
+]

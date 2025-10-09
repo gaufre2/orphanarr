@@ -1,25 +1,67 @@
-import Bun from 'bun'
+import type { Torrent } from "@ctrl/qbittorrent";
 
-export class TorrentFile {
-  private readonly stats: Awaited<ReturnType<Bun.BunFile['stat']>>
+export class InfoTorrent {
+  public readonly name: string;
+  public readonly category: string;
+  public readonly tags: string[];
+  public readonly contentPath: string;
+  public readonly hash: string;
 
-  private constructor(stats: Awaited<ReturnType<Bun.BunFile['stat']>>) {
-    this.stats = stats
-  }
-
-  get dev(): number { return this.stats.dev }
-  get ino(): number { return this.stats.ino }
-  get size(): number { return this.stats.size }
-
-  async isHardLinkedWith(comparisonTarget: string | Bun.BunFile): Promise<boolean> {
-    const comparisonTargetStats = typeof comparisonTarget === 'string'
-      ? await Bun.file(comparisonTarget).stat()
-      : await comparisonTarget.stat()
-    return this.ino === comparisonTargetStats.ino && this.dev === comparisonTargetStats.dev
-  }
-
-  static async fromPath(filePath: string): Promise<TorrentFile> {
-    const stats = await Bun.file(filePath).stat()
-    return new TorrentFile(stats)
+  constructor(torrent: Torrent) {
+    this.name = torrent.name;
+    this.category = torrent.category;
+    this.tags = torrent.tags.split(",").map((item) => item.trim());
+    this.contentPath = torrent.content_path;
+    this.hash = torrent.hash;
   }
 }
+
+export class Torrents {
+  public readonly info: InfoTorrent[];
+
+  constructor(torrents: Torrent[]) {
+    this.info = torrents.map((torrent) => new InfoTorrent(torrent));
+  }
+
+  findMatchingTorrents(criteria: TorrentFilterCriteria): InfoTorrent[] {
+    return this.info.filter((torrent) =>
+      this.meetsAllCriteria(torrent, criteria)
+    );
+  }
+
+  private meetsAllCriteria(
+    torrent: InfoTorrent,
+    criteria: TorrentFilterCriteria
+  ): boolean {
+    return (
+      this.meetsCategoryRequirement(torrent, criteria) &&
+      this.meetsTagExclusionRequirement(torrent, criteria)
+    );
+  }
+
+  private meetsCategoryRequirement(
+    torrent: InfoTorrent,
+    criteria: TorrentFilterCriteria
+  ): boolean {
+    return (
+      !criteria.categories || criteria.categories.includes(torrent.category)
+    );
+  }
+
+  private meetsTagExclusionRequirement(
+    torrent: InfoTorrent,
+    criteria: TorrentFilterCriteria
+  ): boolean {
+    return (
+      !criteria.excludedTags ||
+      !criteria.excludedTags.some((tag) => {
+        return torrent.tags.includes(tag);
+      })
+    );
+  }
+}
+
+export type TorrentFilterCriteria = {
+  categories?: string[];
+  excludedTags?: string[];
+};
