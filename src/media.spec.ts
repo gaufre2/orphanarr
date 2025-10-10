@@ -9,18 +9,25 @@ describe("Torrents from qbittorrent", () => {
     readFileSync("./test/mock/get-torrent-list.mock.json", "utf-8")
   );
 
-  describe("Watch the first torrent", () => {
-    test("Get the first torrent", () => {
+  describe("Watch torrents", () => {
+    test("Watch the first torrent", () => {
       const torrents = new Torrents(fakeTorrents);
       const arrayOfOneTorrent = torrents.info.slice(0, 1);
       const watched = WatchedMedia.addMediasLinkedToTorrent(arrayOfOneTorrent);
       expect(watched.medias[0]?.torrent.name).toBe(fakeTorrents[0]?.name);
     });
 
-    test("Get all torrents", () => {
+    test("Watch all torrents", () => {
       const torrents = new Torrents(fakeTorrents);
       const watched = WatchedMedia.addMediasLinkedToTorrent(torrents.info);
       expect(watched.medias).toBeArrayOfSize(fakeTorrents.length);
+    });
+
+    test("Watch none, empty client (no torrents)", () => {
+      const noTorrents: Torrent[] = [];
+      const torrents = new Torrents(noTorrents);
+      const watched = WatchedMedia.addMediasLinkedToTorrent(torrents.info);
+      expect(watched.medias).toBeArrayOfSize(noTorrents.length);
     });
   });
 });
