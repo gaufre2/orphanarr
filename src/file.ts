@@ -33,7 +33,6 @@ export class FileMedia {
         fileMedias.push(fileMedia);
       } else {
         const filesFromDir = await readdir(path);
-        filesFromDir.sort(); // Here to have predictive test
         for (const fileFromDir of filesFromDir) {
           await searchMediasRecursively(join(path, fileFromDir));
         }
