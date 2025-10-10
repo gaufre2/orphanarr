@@ -1,25 +1,17 @@
 import type { InfoTorrent } from "./torrent";
 
 export class WatchedMedia {
-  public readonly torrent: InfoTorrent;
+  public readonly medias: Media[];
 
-  constructor(torrent: InfoTorrent) {
-    this.torrent = torrent;
+  private constructor(medias: Media[]) {
+    this.medias = medias;
+  }
+
+  static addMediasLinkedToTorrent(torrents: InfoTorrent[]): WatchedMedia {
+    return new WatchedMedia(torrents.map((torrent) => ({ torrent })));
   }
 }
 
-export class WatchedMedias {
-  public readonly medias: WatchedMedia[];
-
-  constructor() {
-    this.medias = [];
-  }
-
-  addMedia(media: WatchedMedia): void {
-    this.medias.push(media);
-  }
-
-  addTorrents(torrents: InfoTorrent[]): void {
-    torrents.forEach((torrent) => this.addMedia(new WatchedMedia(torrent)));
-  }
+interface Media {
+  readonly torrent: InfoTorrent;
 }

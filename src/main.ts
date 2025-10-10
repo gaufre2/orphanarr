@@ -1,7 +1,7 @@
 import { QBittorrent } from "@ctrl/qbittorrent";
 import dotenv from "dotenv";
 import { Torrents } from "./torrent";
-import { WatchedMedias } from "./media";
+import { WatchedMedia } from "./media";
 
 main();
 
@@ -24,8 +24,9 @@ async function main() {
     excludedTags: [protectedTag],
   };
 
-  const watched = new WatchedMedias();
-  watched.addTorrents(allTorrents.findMatching(filterTorrentToWatch));
+  const watched = WatchedMedia.addMediasLinkedToTorrent(
+    allTorrents.findMatching(filterTorrentToWatch)
+  );
 
   //TODO Get files stats from torrents local filesystem
   //TODO Get path from Sonarr and Radarr
