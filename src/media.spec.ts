@@ -20,7 +20,7 @@ describe("Torrents from qbittorrent", () => {
     test("Get all torrents", () => {
       const torrents = new Torrents(fakeTorrents);
       const watched = WatchedMedia.addMediasLinkedToTorrent(torrents.info);
-      expect(watched.medias.length).toBe(fakeTorrents.length);
+      expect(watched.medias).toBeArrayOfSize(fakeTorrents.length);
     });
   });
 });

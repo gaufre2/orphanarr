@@ -250,27 +250,22 @@ describe("List media files from torrent content path", () => {
   test("Get single media file from dirrect path", async () => {
     const mediaPath = join(fakeTorrentMovieDir, "MovieWithLinks.mkv");
     const torrentMedia = await FileMedia.collectMediaFiles(mediaPath);
-    expect(torrentMedia).toBeArrayOfSize(1);
-    expect(torrentMedia[0]?.file.name).toBe(Bun.file(mediaPath).name);
+    expect(torrentMedia).toContainAllValues([await FileMedia.from(mediaPath)]);
   });
   test("Get single media file from directory path", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MovieWithLinksInAFolder");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
-    expect(torrentMedia).toBeArrayOfSize(1);
-    expect(torrentMedia[0]?.file.name).toBe(
-      Bun.file(join(dirPath, "/Movie.mkv")).name
-    );
+    expect(torrentMedia).toContainAllValues([
+      await FileMedia.from(join(dirPath, "Movie.mkv")),
+    ]);
   });
   test("Get multiple media file from directory path", async () => {
     const dirPath = join(fakeRadarrDir, "MovieWithLinks");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
-    expect(torrentMedia).toBeArrayOfSize(2);
-    expect(torrentMedia[0]?.file.name).toBe(
-      Bun.file(join(dirPath, "Movie.Link1.mkv")).name
-    );
-    expect(torrentMedia[1]?.file.name).toBe(
-      Bun.file(join(dirPath, "Movie.Link2.mkv")).name
-    );
+    expect(torrentMedia).toContainAllValues([
+      await FileMedia.from(join(dirPath, "Movie.Link1.mkv")),
+      await FileMedia.from(join(dirPath, "Movie.Link2.mkv")),
+    ]);
   });
   test("Throw error if path is invalid", async () => {
     const path = join(fakeTorrentMovieDir, "InvalidPath");
@@ -279,15 +274,10 @@ describe("List media files from torrent content path", () => {
   test("Get multiple media file from different level of nested directory", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
-    expect(torrentMedia).toBeArrayOfSize(3);
-    expect(torrentMedia[0]?.file.name).toBe(
-      Bun.file(join(dirPath, "MovieAtRoot1.mkv")).name
-    );
-    expect(torrentMedia[1]?.file.name).toBe(
-      Bun.file(join(dirPath, "MovieAtRoot2.mkv")).name
-    );
-    expect(torrentMedia[2]?.file.name).toBe(
-      Bun.file(join(dirPath, "Nested/MovieInNestedFolder.mkv")).name
-    );
+    expect(torrentMedia).toContainAllValues([
+      await FileMedia.from(join(dirPath, "MovieAtRoot1.mkv")),
+      await FileMedia.from(join(dirPath, "MovieAtRoot2.mkv")),
+      await FileMedia.from(join(dirPath, "Nested/MovieInNestedFolder.mkv")),
+    ]);
   });
 });
