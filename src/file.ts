@@ -1,4 +1,6 @@
-import Bun from "bun";
+import Bun, { type BunFile } from "bun";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
 
 export class FileExtended {
   private readonly stats: Awaited<ReturnType<Bun.BunFile["stat"]>>;
@@ -33,5 +35,33 @@ export class FileExtended {
   static async fromPath(filePath: string): Promise<FileExtended> {
     const stats = await Bun.file(filePath).stat();
     return new FileExtended(stats);
+  }
+
+  static async searchMediasFromRootPath(path: string): Promise<Bun.BunFile[]> {
+    const mediaFiles: BunFile[] = [];
+    await searchMediasRecursively(path);
+
+    async function searchMediasRecursively(path: string) {
+      const file = Bun.file(path);
+      if (await isMedia(file)) {
+        mediaFiles.push(file);
+      } else {
+        const filesFromDir = await readdir(path);
+        filesFromDir.sort();
+        for (const fileFromDir of filesFromDir) {
+          await searchMediasRecursively(join(path, fileFromDir));
+        }
+      }
+    }
+
+    async function isMedia(file: Bun.BunFile): Promise<boolean> {
+      const fileStat = await file.stat();
+      if (fileStat.isFile() && file.name?.endsWith(".mkv")) {
+        return true;
+      }
+      return false;
+    }
+
+    return mediaFiles;
   }
 }

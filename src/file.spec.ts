@@ -246,5 +246,48 @@ describe("Hard linking check", () => {
   });
 });
 
+describe("List media files from torrent content path", () => {
+  test("Get single media file from dirrect path", async () => {
+    const mediaPath = join(fakeTorrentMovieDir, "MovieWithLinks.mkv");
+    const torrentMedia = await FileExtended.searchMediasFromRootPath(mediaPath);
+    expect(torrentMedia).toBeArrayOfSize(1);
+    expect(torrentMedia[0]?.name).toBe(Bun.file(mediaPath).name);
+  });
+  test("Get single media file from directory path", async () => {
+    const dirPath = join(fakeTorrentMovieDir, "MovieWithLinksInAFolder");
+    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    expect(torrentMedia).toBeArrayOfSize(1);
+    expect(torrentMedia[0]?.name).toBe(
+      Bun.file(join(dirPath, "/Movie.mkv")).name
+    );
+  });
+  test("Get multiple media file from directory path", async () => {
+    const dirPath = join(fakeRadarrDir, "MovieWithLinks");
+    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    expect(torrentMedia).toBeArrayOfSize(2);
+    expect(torrentMedia[0]?.name).toBe(
+      Bun.file(join(dirPath, "Movie.Link1.mkv")).name
+    );
+    expect(torrentMedia[1]?.name).toBe(
+      Bun.file(join(dirPath, "Movie.Link2.mkv")).name
+    );
+  });
+  test("Throw error if path is invalid", async () => {
+    const path = join(fakeTorrentMovieDir, "InvalidPath");
+    expect(FileExtended.searchMediasFromRootPath(path)).rejects.toThrow();
+  });
+  test("Get multiple media file from directory path", async () => {
+    const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
+    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    expect(torrentMedia).toBeArrayOfSize(3);
+    expect(torrentMedia[0]?.name).toBe(
+      Bun.file(join(dirPath, "MovieAtRoot1.mkv")).name
+    );
+    expect(torrentMedia[1]?.name).toBe(
+      Bun.file(join(dirPath, "MovieAtRoot2.mkv")).name
+    );
+    expect(torrentMedia[2]?.name).toBe(
+      Bun.file(join(dirPath, "Nested/MovieInNestedFolder.mkv")).name
+    );
   });
 });
