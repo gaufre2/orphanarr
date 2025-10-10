@@ -249,13 +249,13 @@ describe("Hard linking check", () => {
 describe("List media files from torrent content path", () => {
   test("Get single media file from dirrect path", async () => {
     const mediaPath = join(fakeTorrentMovieDir, "MovieWithLinks.mkv");
-    const torrentMedia = await FileMedia.searchFileMediasIn(mediaPath);
+    const torrentMedia = await FileMedia.collectMediaFiles(mediaPath);
     expect(torrentMedia).toBeArrayOfSize(1);
     expect(torrentMedia[0]?.file.name).toBe(Bun.file(mediaPath).name);
   });
   test("Get single media file from directory path", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MovieWithLinksInAFolder");
-    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
+    const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toBeArrayOfSize(1);
     expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "/Movie.mkv")).name
@@ -263,7 +263,7 @@ describe("List media files from torrent content path", () => {
   });
   test("Get multiple media file from directory path", async () => {
     const dirPath = join(fakeRadarrDir, "MovieWithLinks");
-    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
+    const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toBeArrayOfSize(2);
     expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "Movie.Link1.mkv")).name
@@ -274,11 +274,11 @@ describe("List media files from torrent content path", () => {
   });
   test("Throw error if path is invalid", async () => {
     const path = join(fakeTorrentMovieDir, "InvalidPath");
-    expect(FileMedia.searchFileMediasIn(path)).rejects.toThrow();
+    expect(FileMedia.collectMediaFiles(path)).rejects.toThrow();
   });
   test("Get multiple media file from different level of nested directory", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
-    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
+    const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toBeArrayOfSize(3);
     expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "MovieAtRoot1.mkv")).name

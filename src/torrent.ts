@@ -23,7 +23,7 @@ export class Torrents {
     this.info = torrents.map((torrent) => new InfoTorrent(torrent));
   }
 
-  findMatchingTorrents(criteria: TorrentFilterCriteria): InfoTorrent[] {
+  findMatching(criteria: TorrentFilterCriteria): InfoTorrent[] {
     return this.info.filter((torrent) =>
       this.meetsAllCriteria(torrent, criteria)
     );

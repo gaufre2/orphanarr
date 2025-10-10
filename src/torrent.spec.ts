@@ -12,14 +12,14 @@ describe("Torrents from qbittorrent", () => {
     test("Get filtered torrents by categories including 'Movies' and 'Series'", () => {
       const torrents = new Torrents(fakeTorrents);
       const filter = { categories: ["Movies", "Series"] };
-      const filteredTorrents = torrents.findMatchingTorrents(filter);
+      const filteredTorrents = torrents.findMatching(filter);
       expect(filteredTorrents.length).toBe(8);
     });
 
     test("Get filtered torrents by tags excluding 'orphanarr.protected'", () => {
       const torrents = new Torrents(fakeTorrents);
       const filter = { excludedTags: ["orphanarr.protected"] };
-      const filteredTorrents = torrents.findMatchingTorrents(filter);
+      const filteredTorrents = torrents.findMatching(filter);
       expect(filteredTorrents.length).toBe(8);
     });
 
@@ -29,7 +29,7 @@ describe("Torrents from qbittorrent", () => {
         categories: ["Movies", "Series"],
         excludedTags: ["orphanarr.protected"],
       };
-      const filteredTorrents = torrents.findMatchingTorrents(filter);
+      const filteredTorrents = torrents.findMatching(filter);
       expect(filteredTorrents.length).toBe(6);
     });
   });

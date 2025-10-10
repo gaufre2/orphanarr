@@ -19,7 +19,7 @@ export class WatchedMedias {
     this.medias.push(media);
   }
 
-  addMediaFromInfoTorrents(torrents: InfoTorrent[]): void {
+  addTorrents(torrents: InfoTorrent[]): void {
     torrents.forEach((torrent) => this.addMedia(new WatchedMedia(torrent)));
   }
 }

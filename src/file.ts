@@ -23,20 +23,7 @@ export class FileMedia {
     return new FileMedia(file, stats);
   }
 
-  async isHardLinkedWith(
-    comparisonTarget: string | Bun.BunFile
-  ): Promise<boolean> {
-    const comparisonTargetStats =
-      typeof comparisonTarget === "string"
-        ? await Bun.file(comparisonTarget).stat()
-        : await comparisonTarget.stat();
-    return (
-      this.stats.ino === comparisonTargetStats.ino &&
-      this.stats.dev === comparisonTargetStats.dev
-    );
-  }
-
-  static async searchFileMediasIn(rootPath: string): Promise<FileMedia[]> {
+  static async collectMediaFiles(rootPath: string): Promise<FileMedia[]> {
     const fileMedias: FileMedia[] = [];
     await searchMediasRecursively(rootPath);
 
@@ -64,5 +51,20 @@ export class FileMedia {
     }
 
     return fileMedias;
+  }
+
+  async isHardLinkedWith(target: string | Bun.BunFile): Promise<boolean> {
+    const targetStats =
+      typeof target === "string"
+        ? await Bun.file(target).stat()
+        : await target.stat();
+    return isHardLinked(this.stats, targetStats);
+
+    function isHardLinked(source: Stats, target: Stats): boolean {
+      return (
+        source.ino === target.ino && // Same inode
+        source.dev === target.dev // Same device
+      );
+    }
   }
 }
