@@ -5,7 +5,7 @@ import { Torrents } from "./torrent";
 
 describe("Torrents from qbittorrent", () => {
   const fakeTorrents: Torrent[] = JSON.parse(
-    readFileSync("./test/get-torrent-list.mock.json", "utf-8")
+    readFileSync("./test/mock/get-torrent-list.mock.json", "utf-8")
   );
 
   describe("Parse torrents", () => {
