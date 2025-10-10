@@ -1,24 +1,26 @@
 import Bun, { type BunFile } from "bun";
 import { readdir } from "node:fs/promises";
+import { type Stats } from "node:fs";
 import { join } from "node:path";
 
 const MEDIA_EXTENSION = ".mkv";
 
-export class FileExtended {
-  private readonly stats: Awaited<ReturnType<Bun.BunFile["stat"]>>;
+export class FileMedia {
+  readonly file: BunFile;
+  readonly stats: Stats;
 
-  private constructor(stats: Awaited<ReturnType<Bun.BunFile["stat"]>>) {
+  private constructor(file: BunFile, stats: Stats) {
+    this.file = file;
     this.stats = stats;
   }
 
-  get dev(): number {
-    return this.stats.dev;
-  }
-  get ino(): number {
-    return this.stats.ino;
-  }
-  get size(): number {
-    return this.stats.size;
+  static async from(pathOrBunFile: string | Bun.BunFile): Promise<FileMedia> {
+    const file =
+      typeof pathOrBunFile === "string"
+        ? Bun.file(pathOrBunFile)
+        : pathOrBunFile;
+    const stats = await file.stat();
+    return new FileMedia(file, stats);
   }
 
   async isHardLinkedWith(
@@ -29,41 +31,38 @@ export class FileExtended {
         ? await Bun.file(comparisonTarget).stat()
         : await comparisonTarget.stat();
     return (
-      this.ino === comparisonTargetStats.ino &&
-      this.dev === comparisonTargetStats.dev
+      this.stats.ino === comparisonTargetStats.ino &&
+      this.stats.dev === comparisonTargetStats.dev
     );
   }
 
-  static async fromPath(filePath: string): Promise<FileExtended> {
-    const stats = await Bun.file(filePath).stat();
-    return new FileExtended(stats);
-  }
-
-  static async searchMediasFromRootPath(path: string): Promise<Bun.BunFile[]> {
-    const mediaFiles: BunFile[] = [];
-    await searchMediasRecursively(path);
+  static async searchFileMediasIn(rootPath: string): Promise<FileMedia[]> {
+    const fileMedias: FileMedia[] = [];
+    await searchMediasRecursively(rootPath);
 
     async function searchMediasRecursively(path: string) {
-      const file = Bun.file(path);
-      if (await isMedia(file)) {
-        mediaFiles.push(file);
+      const fileMedia = await FileMedia.from(path);
+      if (await isMedia(fileMedia)) {
+        fileMedias.push(fileMedia);
       } else {
         const filesFromDir = await readdir(path);
-        filesFromDir.sort();
+        filesFromDir.sort(); // Here to have predictive test
         for (const fileFromDir of filesFromDir) {
           await searchMediasRecursively(join(path, fileFromDir));
         }
       }
     }
 
-    async function isMedia(file: Bun.BunFile): Promise<boolean> {
-      const fileStat = await file.stat();
-      if (fileStat.isFile() && file.name?.endsWith(MEDIA_EXTENSION)) {
+    async function isMedia(fileMedia: FileMedia): Promise<boolean> {
+      if (
+        fileMedia.stats.isFile() &&
+        fileMedia.file.name?.endsWith(MEDIA_EXTENSION)
+      ) {
         return true;
       }
       return false;
     }
 
-    return mediaFiles;
+    return fileMedias;
   }
 }

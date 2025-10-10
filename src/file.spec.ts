@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { FileExtended } from "./file";
+import { FileMedia } from "./file";
 import { execSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -212,7 +212,7 @@ afterAll(() => {
 
 describe("Hard linking check", () => {
   test("2 files are hard linked (from path)", async () => {
-    const torrentFile = await FileExtended.fromPath(
+    const torrentFile = await FileMedia.from(
       join(fakeTorrentMovieDir, "MovieWithLinks.mkv")
     );
     expect(
@@ -223,7 +223,7 @@ describe("Hard linking check", () => {
   });
 
   test("2 files are not hard linked", async () => {
-    const torrentFile = await FileExtended.fromPath(
+    const torrentFile = await FileMedia.from(
       join(fakeTorrentMovieDir, "MovieWithLinks.mkv")
     );
     expect(
@@ -234,7 +234,7 @@ describe("Hard linking check", () => {
   });
 
   test("1 file is invalid", async () => {
-    const torrentFile = await FileExtended.fromPath(
+    const torrentFile = await FileMedia.from(
       join(fakeTorrentMovieDir, "MovieWithLinks.mkv")
     );
     expect.assertions(1);
@@ -249,44 +249,44 @@ describe("Hard linking check", () => {
 describe("List media files from torrent content path", () => {
   test("Get single media file from dirrect path", async () => {
     const mediaPath = join(fakeTorrentMovieDir, "MovieWithLinks.mkv");
-    const torrentMedia = await FileExtended.searchMediasFromRootPath(mediaPath);
+    const torrentMedia = await FileMedia.searchFileMediasIn(mediaPath);
     expect(torrentMedia).toBeArrayOfSize(1);
-    expect(torrentMedia[0]?.name).toBe(Bun.file(mediaPath).name);
+    expect(torrentMedia[0]?.file.name).toBe(Bun.file(mediaPath).name);
   });
   test("Get single media file from directory path", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MovieWithLinksInAFolder");
-    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
     expect(torrentMedia).toBeArrayOfSize(1);
-    expect(torrentMedia[0]?.name).toBe(
+    expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "/Movie.mkv")).name
     );
   });
   test("Get multiple media file from directory path", async () => {
     const dirPath = join(fakeRadarrDir, "MovieWithLinks");
-    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
     expect(torrentMedia).toBeArrayOfSize(2);
-    expect(torrentMedia[0]?.name).toBe(
+    expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "Movie.Link1.mkv")).name
     );
-    expect(torrentMedia[1]?.name).toBe(
+    expect(torrentMedia[1]?.file.name).toBe(
       Bun.file(join(dirPath, "Movie.Link2.mkv")).name
     );
   });
   test("Throw error if path is invalid", async () => {
     const path = join(fakeTorrentMovieDir, "InvalidPath");
-    expect(FileExtended.searchMediasFromRootPath(path)).rejects.toThrow();
+    expect(FileMedia.searchFileMediasIn(path)).rejects.toThrow();
   });
-  test("Get multiple media file from directory path", async () => {
+  test("Get multiple media file from different level of nested directory", async () => {
     const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
-    const torrentMedia = await FileExtended.searchMediasFromRootPath(dirPath);
+    const torrentMedia = await FileMedia.searchFileMediasIn(dirPath);
     expect(torrentMedia).toBeArrayOfSize(3);
-    expect(torrentMedia[0]?.name).toBe(
+    expect(torrentMedia[0]?.file.name).toBe(
       Bun.file(join(dirPath, "MovieAtRoot1.mkv")).name
     );
-    expect(torrentMedia[1]?.name).toBe(
+    expect(torrentMedia[1]?.file.name).toBe(
       Bun.file(join(dirPath, "MovieAtRoot2.mkv")).name
     );
-    expect(torrentMedia[2]?.name).toBe(
+    expect(torrentMedia[2]?.file.name).toBe(
       Bun.file(join(dirPath, "Nested/MovieInNestedFolder.mkv")).name
     );
   });
