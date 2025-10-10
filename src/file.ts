@@ -2,6 +2,8 @@ import Bun, { type BunFile } from "bun";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
+const MEDIA_EXTENSION = ".mkv";
+
 export class FileExtended {
   private readonly stats: Awaited<ReturnType<Bun.BunFile["stat"]>>;
 
@@ -56,7 +58,7 @@ export class FileExtended {
 
     async function isMedia(file: Bun.BunFile): Promise<boolean> {
       const fileStat = await file.stat();
-      if (fileStat.isFile() && file.name?.endsWith(".mkv")) {
+      if (fileStat.isFile() && file.name?.endsWith(MEDIA_EXTENSION)) {
         return true;
       }
       return false;
