@@ -1,0 +1,4 @@
+#:schema https://www.schemastore.org/bunfig.json
+
+[test]
+preload = ["./test/preload/files-and-hardlinks.ts", "./test/preload/torrents.ts"]

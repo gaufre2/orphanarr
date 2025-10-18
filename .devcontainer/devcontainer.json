@@ -22,7 +22,8 @@
         "esbenp.prettier-vscode",
         "Gruntfuggly.todo-tree",
         "redhat.vscode-yaml",
-        "oven.bun-vscode"
+        "oven.bun-vscode",
+        "tamasfe.even-better-toml"
       ]
     }
   }

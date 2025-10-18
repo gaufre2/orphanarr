@@ -1,14 +1,10 @@
 import type { Torrent } from "@ctrl/qbittorrent";
 import { describe, test, expect } from "bun:test";
-import { readFileSync } from "fs";
 import { Torrents } from "./torrent";
 import { WatchedMedia } from "./media";
+import { fakeTorrents } from "../test/preload/torrents";
 
 describe("Torrents from qbittorrent", () => {
-  const fakeTorrents: Torrent[] = JSON.parse(
-    readFileSync("./test/mock/get-torrent-list.mock.json", "utf-8")
-  );
-
   describe("Watch torrents", () => {
     test("Watch the first torrent", () => {
       const torrents = new Torrents(fakeTorrents);
