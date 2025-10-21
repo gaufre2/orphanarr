@@ -76,4 +76,12 @@ describe("List media files from torrent content path", () => {
       await FileMedia.from(join(dirPath, "Nested/MovieInNestedFolder.mkv")),
     ]);
   });
+  test("Get no media file from path of a non-media file", async () => {
+    const dirPath = join(
+      fakeTorrentMovieDir,
+      "MovieWithoutLinksButUnwatchExtension.iso"
+    );
+    const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
+    expect(torrentMedia).toBeArrayOfSize(0);
+  });
 });

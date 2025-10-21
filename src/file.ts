@@ -32,9 +32,11 @@ export class FileMedia {
       if (await isMedia(fileMedia)) {
         fileMedias.push(fileMedia);
       } else {
-        const filesFromDir = await readdir(path);
-        for (const fileFromDir of filesFromDir) {
-          await searchMediasRecursively(join(path, fileFromDir));
+        if (fileMedia.stats.isDirectory()) {
+          const filesFromDir = await readdir(path);
+          for (const fileFromDir of filesFromDir) {
+            await searchMediasRecursively(join(path, fileFromDir));
+          }
         }
       }
     }
