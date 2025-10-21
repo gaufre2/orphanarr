@@ -1,20 +1,5 @@
 import type { Torrent } from "@ctrl/qbittorrent";
-
-export class InfoTorrent {
-  public readonly name: string;
-  public readonly category: string;
-  public readonly tags: string[];
-  public readonly contentPath: string;
-  public readonly hash: string;
-
-  constructor(torrent: Torrent) {
-    this.name = torrent.name;
-    this.category = torrent.category;
-    this.tags = torrent.tags.split(",").map((item) => item.trim());
-    this.contentPath = torrent.content_path;
-    this.hash = torrent.hash;
-  }
-}
+import { FileMedia } from "./file";
 
 export class Torrents {
   public readonly info: InfoTorrent[];
@@ -58,6 +43,43 @@ export class Torrents {
         return torrent.tags.includes(tag);
       })
     );
+  }
+}
+
+export class MediaTorrent {
+  public readonly info: InfoTorrent;
+  public mediaFiles: FileMedia[] | undefined;
+  torrent: Torrent;
+
+  private constructor(torrent: Torrent, mediaFiles?: FileMedia[]) {
+    this.info = new InfoTorrent(torrent);
+    this.mediaFiles = mediaFiles;
+    this.torrent = torrent;
+  }
+
+  static from(torrent: Torrent): MediaTorrent {
+    return new MediaTorrent(torrent);
+  }
+
+  async collectMediaFiles(): Promise<MediaTorrent> {
+    const mediaFiles = await FileMedia.collectMediaFiles(this.info.contentPath);
+    return new MediaTorrent(this.torrent, mediaFiles);
+  }
+}
+
+export class InfoTorrent {
+  public readonly name: string;
+  public readonly category: string;
+  public readonly tags: string[];
+  public readonly contentPath: string;
+  public readonly hash: string;
+
+  constructor(torrent: Torrent) {
+    this.name = torrent.name;
+    this.category = torrent.category;
+    this.tags = torrent.tags.split(",").map((item) => item.trim());
+    this.contentPath = torrent.content_path;
+    this.hash = torrent.hash;
   }
 }
 
