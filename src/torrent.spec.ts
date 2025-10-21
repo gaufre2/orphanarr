@@ -1,26 +1,26 @@
 import { describe, test, expect } from "bun:test";
-import { Torrents, MediaTorrent } from "./torrent";
+import { MediaTorrents, MediaTorrent } from "./torrent";
 import { fakeTorrents } from "../test/preload/torrents";
 import { basename } from "node:path";
 
 describe("Torrents from qbittorrent", () => {
   describe("Parse torrents", () => {
     test("Get filtered torrents by categories including 'Movies' and 'Series'", () => {
-      const allTorrents = new Torrents(fakeTorrents);
+      const allTorrents = new MediaTorrents(fakeTorrents);
       const filter = { categories: ["Movies", "Series"] };
       const filteredTorrents = allTorrents.findMatching(filter);
       expect(filteredTorrents.length).toBe(8);
     });
 
     test("Get filtered torrents by tags excluding 'orphanarr.protected'", () => {
-      const allTorrents = new Torrents(fakeTorrents);
+      const allTorrents = new MediaTorrents(fakeTorrents);
       const filter = { excludedTags: ["orphanarr.protected"] };
       const filteredTorrents = allTorrents.findMatching(filter);
       expect(filteredTorrents.length).toBe(8);
     });
 
     test("Get filtered torrents by tags including 'Movies' and 'Series' and excluding 'orphanarr.protected'", () => {
-      const allTorrents = new Torrents(fakeTorrents);
+      const allTorrents = new MediaTorrents(fakeTorrents);
       const filter = {
         categories: ["Movies", "Series"],
         excludedTags: ["orphanarr.protected"],

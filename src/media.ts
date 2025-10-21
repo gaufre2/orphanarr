@@ -1,4 +1,4 @@
-import type { InfoTorrent } from "./torrent";
+import type { MediaTorrent } from "./torrent";
 
 export class WatchedMedia {
   public readonly medias: Media[];
@@ -7,11 +7,11 @@ export class WatchedMedia {
     this.medias = medias;
   }
 
-  static addMediasLinkedToTorrent(torrents: InfoTorrent[]): WatchedMedia {
+  static addMediaTorrents(torrents: MediaTorrent[]): WatchedMedia {
     return new WatchedMedia(torrents.map((torrent) => ({ torrent })));
   }
 }
 
 interface Media {
-  readonly torrent: InfoTorrent;
+  readonly torrent: MediaTorrent;
 }

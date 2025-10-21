@@ -1,21 +1,23 @@
 import type { Torrent } from "@ctrl/qbittorrent";
 import { FileMedia } from "./file";
 
-export class Torrents {
-  public readonly info: InfoTorrent[];
+export class MediaTorrents {
+  public readonly torrents: MediaTorrent[];
 
   constructor(torrents: Torrent[]) {
-    this.info = torrents.map((torrent) => new InfoTorrent(torrent));
+    this.torrents = torrents.map((torrent) => {
+      return MediaTorrent.from(torrent);
+    });
   }
 
-  findMatching(criteria: TorrentFilterCriteria): InfoTorrent[] {
-    return this.info.filter((torrent) =>
+  findMatching(criteria: TorrentFilterCriteria): MediaTorrent[] {
+    return this.torrents.filter((torrent) =>
       this.meetsAllCriteria(torrent, criteria)
     );
   }
 
   private meetsAllCriteria(
-    torrent: InfoTorrent,
+    torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
     return (
@@ -25,22 +27,23 @@ export class Torrents {
   }
 
   private meetsCategoryRequirement(
-    torrent: InfoTorrent,
+    torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
     return (
-      !criteria.categories || criteria.categories.includes(torrent.category)
+      !criteria.categories ||
+      criteria.categories.includes(torrent.info.category)
     );
   }
 
   private meetsTagExclusionRequirement(
-    torrent: InfoTorrent,
+    torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
     return (
       !criteria.excludedTags ||
       !criteria.excludedTags.some((tag) => {
-        return torrent.tags.includes(tag);
+        return torrent.info.tags.includes(tag);
       })
     );
   }
