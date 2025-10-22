@@ -2,7 +2,7 @@ import type { Torrent } from "@ctrl/qbittorrent";
 import { FileMedia } from "./file";
 
 export class MediaTorrents {
-  public readonly torrents: MediaTorrent[];
+  readonly torrents: MediaTorrent[];
 
   constructor(torrents: Torrent[]) {
     this.torrents = torrents.map((torrent) => {
@@ -12,21 +12,21 @@ export class MediaTorrents {
 
   findMatching(criteria: TorrentFilterCriteria): MediaTorrent[] {
     return this.torrents.filter((torrent) =>
-      this.meetsAllCriteria(torrent, criteria)
+      this._meetsAllCriteria(torrent, criteria)
     );
   }
 
-  private meetsAllCriteria(
+  private _meetsAllCriteria(
     torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
     return (
-      this.meetsCategoryRequirement(torrent, criteria) &&
-      this.meetsTagExclusionRequirement(torrent, criteria)
+      this._meetsCategoryRequirement(torrent, criteria) &&
+      this._meetsTagExclusionRequirement(torrent, criteria)
     );
   }
 
-  private meetsCategoryRequirement(
+  private _meetsCategoryRequirement(
     torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
@@ -36,7 +36,7 @@ export class MediaTorrents {
     );
   }
 
-  private meetsTagExclusionRequirement(
+  private _meetsTagExclusionRequirement(
     torrent: MediaTorrent,
     criteria: TorrentFilterCriteria
   ): boolean {
@@ -50,14 +50,14 @@ export class MediaTorrents {
 }
 
 export class MediaTorrent {
-  public readonly info: InfoTorrent;
-  public mediaFiles: FileMedia[] | undefined;
-  torrent: Torrent;
+  readonly info: InfoTorrent;
+  readonly mediaFiles: FileMedia[] | undefined;
+  private readonly _torrent: Torrent;
 
   private constructor(torrent: Torrent, mediaFiles?: FileMedia[]) {
     this.info = new InfoTorrent(torrent);
     this.mediaFiles = mediaFiles;
-    this.torrent = torrent;
+    this._torrent = torrent;
   }
 
   static from(torrent: Torrent): MediaTorrent {
@@ -66,16 +66,16 @@ export class MediaTorrent {
 
   async collectMediaFiles(): Promise<MediaTorrent> {
     const mediaFiles = await FileMedia.collectMediaFiles(this.info.contentPath);
-    return new MediaTorrent(this.torrent, mediaFiles);
+    return new MediaTorrent(this._torrent, mediaFiles);
   }
 }
 
 export class InfoTorrent {
-  public readonly name: string;
-  public readonly category: string;
-  public readonly tags: string[];
-  public readonly contentPath: string;
-  public readonly hash: string;
+  readonly name: string;
+  readonly category: string;
+  readonly tags: string[];
+  readonly contentPath: string;
+  readonly hash: string;
 
   constructor(torrent: Torrent) {
     this.name = torrent.name;

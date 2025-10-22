@@ -1,7 +1,7 @@
 import type { MediaTorrent, MediaTorrents } from "./torrent";
 
 export class WatchedMedia {
-  public readonly medias: Media[];
+  readonly medias: Media[];
 
   private constructor(medias: Media[]) {
     this.medias = medias;
