@@ -1,6 +1,6 @@
 import { QBittorrent } from "@ctrl/qbittorrent";
 import dotenv from "dotenv";
-import { Torrents } from "./torrent";
+import { MediaTorrents } from "./torrent";
 import { WatchedMedia } from "./media";
 
 main();
@@ -15,20 +15,21 @@ async function main() {
     password: process.env.QBITTORRENT_PASSWORD,
   });
 
-  const allTorrents = new Torrents(await client.listTorrents());
-
-  const protectedTag =
-    process.env.TORRENT_TAG_PROTECTED || "orphanarr.protected";
+  const protectedTag = [
+    process.env.TORRENT_TAG_PROTECTED || "orphanarr.protected",
+  ];
+  const includeCategories = process.env.TORRENT_CATEGORIES?.split(",");
   const filterTorrentToWatch = {
-    categories: process.env.TORRENT_CATEGORIES?.split(","),
-    excludedTags: [protectedTag],
+    categories: includeCategories,
+    excludedTags: protectedTag,
   };
 
-  const watched = WatchedMedia.addMediasLinkedToTorrent(
-    allTorrents.findMatching(filterTorrentToWatch)
-  );
+  const torrents = await client.listTorrents();
 
-  //TODO Get files stats from torrents local filesystem
+  const watchedMediaTorrents = (
+    await MediaTorrents.from(torrents)
+  ).findMatching(filterTorrentToWatch);
+
   //TODO Get path from Sonarr and Radarr
   //TODO Get files stats from Sonarr and Radarr
   //TODO Add linked files to watched
