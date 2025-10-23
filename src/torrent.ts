@@ -2,16 +2,27 @@ import type { Torrent } from "@ctrl/qbittorrent";
 import { FileMedia } from "./file";
 
 export class MediaTorrents {
-  readonly torrents: MediaTorrent[];
+  private _mediaTorrents: MediaTorrent[] = [];
 
-  constructor(torrents: Torrent[]) {
-    this.torrents = torrents.map((torrent) => {
-      return MediaTorrent.from(torrent);
-    });
+  private constructor(torrents: MediaTorrent[]) {
+    this._mediaTorrents = torrents;
+  }
+
+  static async from(torrents: Torrent[]): Promise<MediaTorrents> {
+    const mediaTorrents = await Promise.all(
+      torrents.map(async (torrent) => {
+        return MediaTorrent.from(torrent);
+      })
+    );
+    return new MediaTorrents(mediaTorrents);
+  }
+
+  all() {
+    return this._mediaTorrents;
   }
 
   findMatching(criteria: TorrentFilterCriteria): MediaTorrent[] {
-    return this.torrents.filter((torrent) =>
+    return this._mediaTorrents.filter((torrent) =>
       this._meetsAllCriteria(torrent, criteria)
     );
   }
@@ -52,21 +63,15 @@ export class MediaTorrents {
 export class MediaTorrent {
   readonly info: InfoTorrent;
   readonly mediaFiles: FileMedia[] | undefined;
-  private readonly _torrent: Torrent;
 
   private constructor(torrent: Torrent, mediaFiles?: FileMedia[]) {
     this.info = new InfoTorrent(torrent);
     this.mediaFiles = mediaFiles;
-    this._torrent = torrent;
   }
 
-  static from(torrent: Torrent): MediaTorrent {
-    return new MediaTorrent(torrent);
-  }
-
-  async collectMediaFiles(): Promise<MediaTorrent> {
-    const mediaFiles = await FileMedia.collectMediaFiles(this.info.contentPath);
-    return new MediaTorrent(this._torrent, mediaFiles);
+  static async from(torrent: Torrent): Promise<MediaTorrent> {
+    const mediaFiles = await FileMedia.collectMediaFiles(torrent.content_path);
+    return new MediaTorrent(torrent, mediaFiles);
   }
 }
 
