@@ -22,14 +22,14 @@ describe("Torrents from qbittorrent", () => {
     });
     test("Return faked info torrents", async () => {
       const torrents = await getAllTorrents(fakeTorrents);
-      expect(torrents).toBeArrayOfSize(10);
+      expect(torrents).toBeArrayOfSize(fakeTorrents.length);
     });
   });
 
   describe("list of media torrents", () => {
     test("Get all", async () => {
       const allMediaTorrents = await getMediaTorrentsToWatch(fakeInfoTorrents);
-      expect(allMediaTorrents.length).toBe(10);
+      expect(allMediaTorrents).toBeArrayOfSize(fakeInfoTorrents.length);
     });
   });
 
@@ -42,7 +42,7 @@ describe("Torrents from qbittorrent", () => {
         fakeInfoTorrents,
         filter
       );
-      expect(filteredMediaTorrents.length).toBe(8);
+      expect(filteredMediaTorrents).toBeArrayOfSize(10);
     });
     test("By tags excluding 'orphanarr.protected'", async () => {
       const filter = { excludedTags: ["orphanarr.protected"] };
@@ -50,7 +50,7 @@ describe("Torrents from qbittorrent", () => {
         fakeInfoTorrents,
         filter
       );
-      expect(filteredMediaTorrents.length).toBe(8);
+      expect(filteredMediaTorrents).toBeArrayOfSize(15);
     });
     test("By tags including 'Movies' and 'Series' and excluding 'orphanarr.protected'", async () => {
       const filter: TorrentFilterCriteria = {
@@ -61,30 +61,35 @@ describe("Torrents from qbittorrent", () => {
         fakeInfoTorrents,
         filter
       );
-      expect(filteredMediaTorrents.length).toBe(6);
+      expect(filteredMediaTorrents).toBeArrayOfSize(8);
     });
   });
 });
 
 describe("Get media files from torrents", () => {
-  test("Get thew only media file from a single torrent", async () => {
+  test("Get the only media file from a single torrent", async () => {
     const singleTorrentWithMediaFile = await MediaTorrent.from(
-      fakeInfoTorrents.at(3)!
+      fakeInfoTorrents.find((torrent) => torrent.name === "MovieWithLinks.mkv")!
     );
     const mediaFileName = basename(
       singleTorrentWithMediaFile.mediaFiles!.at(0)!.file.name!
     );
+    expect(singleTorrentWithMediaFile.mediaFiles).toBeArrayOfSize(1);
     expect(mediaFileName).toBe("MovieWithLinks.mkv");
   });
   test("Get multiple media file from a torrent with nested directory", async () => {
     const singleTorrentWithMediaFile = await MediaTorrent.from(
-      fakeInfoTorrents.at(0)!
+      fakeInfoTorrents.find(
+        (torrent) => torrent.name === "SeriesWithLinks.S01"
+      )!
     );
-    expect(singleTorrentWithMediaFile.mediaFiles).toBeArrayOfSize(6);
+    expect(singleTorrentWithMediaFile.mediaFiles).toBeArrayOfSize(3);
   });
   test("Get no media file from a torrent with no media file", async () => {
     const singleTorrentWithMediaFile = await MediaTorrent.from(
-      fakeInfoTorrents.at(7)!
+      fakeInfoTorrents.find(
+        (torrent) => torrent.name === "MovieWithoutLinksButUnwatchExtension.iso"
+      )!
     );
     expect(singleTorrentWithMediaFile.mediaFiles).toBeArrayOfSize(0);
   });

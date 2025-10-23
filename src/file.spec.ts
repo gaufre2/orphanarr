@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   fakeRadarrDir,
+  fakeSonarrDir,
   fakeTorrentMovieDir,
 } from "../test/preload/files-and-hardlinks";
 import { FileMedia } from "./file";
@@ -56,11 +57,12 @@ describe("List media files from torrent content path", () => {
     ]);
   });
   test("Get multiple media file from directory path", async () => {
-    const dirPath = join(fakeRadarrDir, "MovieWithLinks");
+    const dirPath = join(fakeSonarrDir, "SeriesWithLinks/Season 01");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toContainAllValues([
-      await FileMedia.from(join(dirPath, "Movie.Link1.mkv")),
-      await FileMedia.from(join(dirPath, "Movie.Link2.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 01.Link1.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 02.Link1.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 03.Link1.mkv")),
     ]);
   });
   test("Throw error if path is invalid", async () => {
@@ -71,9 +73,11 @@ describe("List media files from torrent content path", () => {
     const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toContainAllValues([
-      await FileMedia.from(join(dirPath, "MovieAtRoot1.mkv")),
-      await FileMedia.from(join(dirPath, "MovieAtRoot2.mkv")),
-      await FileMedia.from(join(dirPath, "Nested/MovieInNestedFolder.mkv")),
+      await FileMedia.from(join(dirPath, "MovieAtRoot.Part1.mkv")),
+      await FileMedia.from(join(dirPath, "MovieAtRoot.Part2.mkv")),
+      await FileMedia.from(
+        join(dirPath, "Bonus/MovieInNestedFolder.Bonus.mkv")
+      ),
     ]);
   });
   test("Get no media file from path of a non-media file", async () => {

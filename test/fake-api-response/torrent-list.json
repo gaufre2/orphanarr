@@ -1,0 +1,138 @@
+[
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithLinks.S01",
+    "hash": "c638a9dd2fea4b33c6364e3f09896d7504ffcce6",
+    "name": "SeriesWithLinks.S01",
+    "tags": "OtherTagName1, OtherTagName2",
+    "useless_parameter": true
+  },
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithLinks.S02",
+    "hash": "ce9aa1c30b471a559533b86880ba7456c4aadcef",
+    "name": "SeriesWithLinks.S02",
+    "tags": "OtherTagName1, OtherTagName2",
+    "useless_parameter": true
+  },
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithoutLinksButProtected.S04",
+    "hash": "eb0da1e081c33a0fbea8ee1ac1a5692fe9a39c10",
+    "name": "SeriesWithoutLinksButToKeep.S04",
+    "tags": "orphanarr.protected, OtherTagName1",
+    "useless_parameter": true
+  },
+  {
+    "category": "Series",
+    "content_path": "/completed/series/SeriesWithoutLinksToDelete.S01",
+    "hash": "b40322ebaed9e1c436d1bdf9385a8f00930bbedb",
+    "name": "SeriesWithoutLinksToDelete.S01",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MoviesNestedInFolders",
+    "hash": "f2f33620f3ccca2acb445a3952f0e918cfe1ba86",
+    "name": "MoviesNestedInFolders",
+    "tags": "OtherTagName1, OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinksButPreviouslyTaggedToDelete.mkv",
+    "hash": "245e38cbcc967ddedc6187ac5d7b0ed64df4012b",
+    "name": "MovieWithLinksButPreviouslyTagToDelete.mkv",
+    "tags": "orphanarr.to-delete",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinksInAFolder",
+    "hash": "e6d851436a7a82f93b2884bcbb4735badae3d5ad",
+    "name": "MovieWithLinksInAFolder",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithLinks.mkv",
+    "hash": "eb864b63e6a2cdfa965127c26d5b7480305625f5",
+    "name": "MovieWithLinks.mkv",
+    "tags": "OtherTagName1, OtherTagName2, OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithoutLinksButProtected.mkv",
+    "hash": "ab147a505e363144f3698577220f2f1f6b08af7a",
+    "name": "MovieWithoutLinksButProtected.mkv",
+    "tags": "orphanarr.protected",
+    "useless_parameter": true
+  },
+  {
+    "category": "Movies",
+    "content_path": "/completed/movies/MovieWithoutLinksButUnwatchExtension.iso",
+    "hash": "952c26f925fde6664c00988b677c1fd578ebfd80",
+    "name": "MovieWithoutLinksButUnwatchExtension.iso",
+    "tags": "",
+    "useless_parameter": true
+  },
+  {
+    "category": "Cross-seed",
+    "content_path": "/completed/cross-seed/MovieNoMoreLinked.HardCopy1.mkv",
+    "hash": "b6a7936782be1fb3f3ce091c3d62f206fb031a0a",
+    "name": "MovieNoMoreLinked.HardCopy1.mkv",
+    "tags": "",
+    "useless_parameter": true
+  },
+  {
+    "category": "Cross-seed",
+    "content_path": "/completed/cross-seed/MovieWithLinks.HardCopy1.mkv",
+    "hash": "eac401d669630b7d7d364e501a48c4f4d4757625",
+    "name": "MovieWithLinks.HardCopy1.mkv",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Cross-seed",
+    "content_path": "/completed/cross-seed/MovieWithLinks.HardCopy2.mkv",
+    "hash": "c1c93f88d273660be5358cd4ee2df2c2f3f0e8e7",
+    "name": "MovieWithLinks.HardCopy2.mkv",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Cross-seed",
+    "content_path": "/completed/cross-seed/MovieWithLinks.HardCopy3.mkv",
+    "hash": "a0f1490a20d0211c997b44bc357e1972deab8ae3",
+    "name": "MovieWithLinks.HardCopy3.mkv",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "Cross-seed",
+    "content_path": "/completed/cross-seed/SeriesWithLinks.S01.HardCopy1",
+    "hash": "ddb6d7ca222337152c983924799a7b97d884cc48",
+    "name": "SeriesWithLinks.S01.HardCopy1",
+    "tags": "OtherTagName1",
+    "useless_parameter": true
+  },
+  {
+    "category": "Other",
+    "content_path": "/completed/other/MovieFromUnwatchedCategory.mkv",
+    "hash": "4f6cc180b2b21c692e9eca2926847a13e66ff518",
+    "name": "MovieFromUnwatchedCategory.mkv",
+    "tags": "OtherTagName3",
+    "useless_parameter": true
+  },
+  {
+    "category": "",
+    "content_path": "/completed/Uncategorized.mkv",
+    "hash": "e7d02dfc6c0c8691705fb0fb9d285e0355a49e2c",
+    "name": "Uncategorized.mkv",
+    "tags": "",
+    "useless_parameter": true
+  }
+]
