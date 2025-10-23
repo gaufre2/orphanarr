@@ -1,13 +1,35 @@
-import type { Torrent } from "@ctrl/qbittorrent";
+import { QBittorrent, type Torrent } from "@ctrl/qbittorrent";
+import type { TorrentClientConfig } from "@ctrl/shared-torrent";
 import { FileMedia } from "./file";
 
+export async function getAllTorrents(
+  options: Partial<TorrentClientConfig>
+): Promise<InfoTorrent[]>;
+export async function getAllTorrents(
+  torrents: Torrent[]
+): Promise<InfoTorrent[]>;
+export async function getAllTorrents(
+  optionsOrTorrents: Partial<TorrentClientConfig> | Torrent[]
+): Promise<InfoTorrent[]> {
+  let allTorrents: Torrent[];
+
+  if (optionsOrTorrents instanceof Array) {
+    allTorrents = optionsOrTorrents;
+  } else {
+    const client = new QBittorrent(optionsOrTorrents);
+    allTorrents = await client.listTorrents();
+  }
+
+  return allTorrents.map((torrent) => new InfoTorrent(torrent));
+}
+
 export async function getMediaTorrentsToWatch(
-  torrents: Torrent[],
+  torrents: InfoTorrent[],
   criteria?: TorrentFilterCriteria
 ): Promise<MediaTorrent[]> {
   const mediaTorrents = await Promise.all(
     torrents
-      .filter((torrent) => meetsAllCriteria(new InfoTorrent(torrent), criteria))
+      .filter((torrent) => meetsAllCriteria(torrent, criteria))
       .map(async (torrent) => MediaTorrent.from(torrent))
   );
   return mediaTorrents;
@@ -50,13 +72,13 @@ export class MediaTorrent {
   readonly info: InfoTorrent;
   readonly mediaFiles: FileMedia[] | undefined;
 
-  private constructor(torrent: Torrent, mediaFiles?: FileMedia[]) {
-    this.info = new InfoTorrent(torrent);
+  private constructor(info: InfoTorrent, mediaFiles?: FileMedia[]) {
+    this.info = info;
     this.mediaFiles = mediaFiles;
   }
 
-  static async from(torrent: Torrent): Promise<MediaTorrent> {
-    const mediaFiles = await FileMedia.collectMediaFiles(torrent.content_path);
+  static async from(torrent: InfoTorrent): Promise<MediaTorrent> {
+    const mediaFiles = await FileMedia.collectMediaFiles(torrent.contentPath);
     return new MediaTorrent(torrent, mediaFiles);
   }
 }

@@ -1,6 +1,9 @@
-import { QBittorrent } from "@ctrl/qbittorrent";
 import dotenv from "dotenv";
-import { getMediaTorrentsToWatch } from "./torrent";
+import {
+  getAllTorrents,
+  getMediaTorrentsToWatch,
+  type TorrentFilterCriteria,
+} from "./torrent";
 
 main();
 
@@ -8,35 +11,24 @@ async function main() {
   dotenv.config();
   checkEnvironments();
 
-  const client = new QBittorrent({
+  const clientOptions = {
     baseUrl: process.env.QBITTORRENT_BASE_URL,
     username: process.env.QBITTORRENT_USERNAME,
     password: process.env.QBITTORRENT_PASSWORD,
-  });
-
-  const protectedTag =
-    process.env.TORRENT_TAG_PROTECTED || "orphanarr.protected";
-  const includeCategories = process.env.TORRENT_CATEGORIES?.split(",");
-  const torrentsFilter = {
-    categories: includeCategories,
-    excludedTags: [protectedTag],
   };
 
-  const torrents = await client.listTorrents();
+  const allTorrents = await getAllTorrents(clientOptions);
 
-  const watchedMediaTorrents = await getMediaTorrentsToWatch(
-    torrents,
-    torrentsFilter
+  const watchedTorrents = await getMediaTorrentsToWatch(
+    allTorrents,
+    getTorrentsFilter()
   );
 
-  //TODO Get path from Sonarr and Radarr
   //TODO Get files stats from Sonarr and Radarr
-  //TODO Add linked files to watched
-  //TODO Get orphan files from watched
+  //TODO Get orphan files by comparing files stats from Sonarr, Radarr and Torrents
   //TODO Set orphan tag to torrents
+  //TODO Close connection
   //TODO Print a report
-
-  client.logout();
 }
 
 function checkEnvironments() {
@@ -51,4 +43,14 @@ function checkEnvironments() {
 
   if (!process.env.TORRENT_CATEGORIES)
     throw new Error("TORRENT_CATEGORIES is not set in environment variables");
+}
+
+function getTorrentsFilter(): TorrentFilterCriteria {
+  const protectedTag =
+    process.env.TORRENT_TAG_PROTECTED || "orphanarr.protected";
+  const includeCategories = process.env.TORRENT_CATEGORIES?.split(",");
+  return {
+    categories: includeCategories,
+    excludedTags: [protectedTag],
+  };
 }

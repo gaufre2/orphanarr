@@ -8,7 +8,7 @@ export let fakeTorrents: Torrent[];
 
 beforeAll(() => {
   fakeTorrents = JSON.parse(
-    readFileSync("./test/mock/get-torrent-list.mock.json", "utf-8")
+    readFileSync("./test/mock/torrent-list.fake.json", "utf-8")
   );
 
   fakeTorrents.forEach((torrent) => {
