@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import {
-  MediaTorrents,
+  getMediaTorrentsToWatch,
   MediaTorrent,
   type TorrentFilterCriteria,
 } from "./torrent";
@@ -10,7 +10,7 @@ import { basename } from "node:path";
 describe("Torrents from qbittorrent", () => {
   describe("list of media torrents", () => {
     test("Get all", async () => {
-      const allMediaTorrents = (await MediaTorrents.from(fakeTorrents)).all();
+      const allMediaTorrents = await getMediaTorrentsToWatch(fakeTorrents);
       expect(allMediaTorrents.length).toBe(10);
     });
   });
@@ -19,17 +19,19 @@ describe("Torrents from qbittorrent", () => {
       const filter: TorrentFilterCriteria = {
         categories: ["Movies", "Series"],
       };
-      const filteredMediaTorrents = (
-        await MediaTorrents.from(fakeTorrents)
-      ).findMatching(filter);
+      const filteredMediaTorrents = await getMediaTorrentsToWatch(
+        fakeTorrents,
+        filter
+      );
       expect(filteredMediaTorrents.length).toBe(8);
     });
 
     test("By tags excluding 'orphanarr.protected'", async () => {
       const filter = { excludedTags: ["orphanarr.protected"] };
-      const filteredMediaTorrents = (
-        await MediaTorrents.from(fakeTorrents)
-      ).findMatching(filter);
+      const filteredMediaTorrents = await getMediaTorrentsToWatch(
+        fakeTorrents,
+        filter
+      );
       expect(filteredMediaTorrents.length).toBe(8);
     });
 
@@ -38,9 +40,10 @@ describe("Torrents from qbittorrent", () => {
         categories: ["Movies", "Series"],
         excludedTags: ["orphanarr.protected"],
       };
-      const filteredMediaTorrents = (
-        await MediaTorrents.from(fakeTorrents)
-      ).findMatching(filter);
+      const filteredMediaTorrents = await getMediaTorrentsToWatch(
+        fakeTorrents,
+        filter
+      );
       expect(filteredMediaTorrents.length).toBe(6);
     });
   });

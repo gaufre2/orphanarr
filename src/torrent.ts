@@ -1,60 +1,46 @@
 import type { Torrent } from "@ctrl/qbittorrent";
 import { FileMedia } from "./file";
 
-export class MediaTorrents {
-  private _mediaTorrents: MediaTorrent[] = [];
+export async function getMediaTorrentsToWatch(
+  torrents: Torrent[],
+  criteria?: TorrentFilterCriteria
+): Promise<MediaTorrent[]> {
+  const mediaTorrents = await Promise.all(
+    torrents
+      .filter((torrent) => meetsAllCriteria(new InfoTorrent(torrent), criteria))
+      .map(async (torrent) => MediaTorrent.from(torrent))
+  );
+  return mediaTorrents;
 
-  private constructor(torrents: MediaTorrent[]) {
-    this._mediaTorrents = torrents;
-  }
-
-  static async from(torrents: Torrent[]): Promise<MediaTorrents> {
-    const mediaTorrents = await Promise.all(
-      torrents.map(async (torrent) => {
-        return MediaTorrent.from(torrent);
-      })
-    );
-    return new MediaTorrents(mediaTorrents);
-  }
-
-  all() {
-    return this._mediaTorrents;
-  }
-
-  findMatching(criteria: TorrentFilterCriteria): MediaTorrent[] {
-    return this._mediaTorrents.filter((torrent) =>
-      this._meetsAllCriteria(torrent, criteria)
-    );
-  }
-
-  private _meetsAllCriteria(
-    torrent: MediaTorrent,
-    criteria: TorrentFilterCriteria
+  function meetsAllCriteria(
+    torrent: InfoTorrent,
+    criteria?: TorrentFilterCriteria
   ): boolean {
     return (
-      this._meetsCategoryRequirement(torrent, criteria) &&
-      this._meetsTagExclusionRequirement(torrent, criteria)
+      meetsCategoryRequirement(torrent, criteria) &&
+      meetsTagExclusionRequirement(torrent, criteria)
     );
   }
 
-  private _meetsCategoryRequirement(
-    torrent: MediaTorrent,
-    criteria: TorrentFilterCriteria
+  function meetsCategoryRequirement(
+    torrent: InfoTorrent,
+    criteria?: TorrentFilterCriteria
   ): boolean {
+    if (!criteria) return true;
     return (
-      !criteria.categories ||
-      criteria.categories.includes(torrent.info.category)
+      !criteria.categories || criteria.categories.includes(torrent.category)
     );
   }
 
-  private _meetsTagExclusionRequirement(
-    torrent: MediaTorrent,
-    criteria: TorrentFilterCriteria
+  function meetsTagExclusionRequirement(
+    torrent: InfoTorrent,
+    criteria?: TorrentFilterCriteria
   ): boolean {
+    if (!criteria) return true;
     return (
       !criteria.excludedTags ||
       !criteria.excludedTags.some((tag) => {
-        return torrent.info.tags.includes(tag);
+        return torrent.tags.includes(tag);
       })
     );
   }
