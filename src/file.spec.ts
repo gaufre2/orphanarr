@@ -14,7 +14,7 @@ describe("Hard linking check", () => {
     );
     expect(
       await torrentFile.isHardLinkedWith(
-        join(fakeRadarrDir, "MovieWithLinks/Movie.Link1.mkv")
+        join(fakeRadarrDir, "Movie With Links (2020)/Movie.HardCopy1.mkv")
       )
     ).toBe(true);
   });
@@ -25,7 +25,7 @@ describe("Hard linking check", () => {
     );
     expect(
       await torrentFile.isHardLinkedWith(
-        join(fakeRadarrDir, "MovieWithoutHardLink/Movie.NoLink.mkv")
+        join(fakeRadarrDir, "Movie Without Hard Link (2000)/Movie.NoLink.mkv")
       )
     ).toBe(false);
   });
@@ -57,12 +57,12 @@ describe("List media files from torrent content path", () => {
     ]);
   });
   test("Get multiple media file from directory path", async () => {
-    const dirPath = join(fakeSonarrDir, "SeriesWithLinks/Season 01");
+    const dirPath = join(fakeSonarrDir, "Series With Links (1901)/Season 01");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toContainAllValues([
-      await FileMedia.from(join(dirPath, "Episode 01.Link1.mkv")),
-      await FileMedia.from(join(dirPath, "Episode 02.Link1.mkv")),
-      await FileMedia.from(join(dirPath, "Episode 03.Link1.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 01.HardCopy1.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 02.HardCopy1.mkv")),
+      await FileMedia.from(join(dirPath, "Episode 03.HardCopy1.mkv")),
     ]);
   });
   test("Throw error if path is invalid", async () => {
@@ -73,11 +73,9 @@ describe("List media files from torrent content path", () => {
     const dirPath = join(fakeTorrentMovieDir, "MoviesNestedInFolders");
     const torrentMedia = await FileMedia.collectMediaFiles(dirPath);
     expect(torrentMedia).toContainAllValues([
-      await FileMedia.from(join(dirPath, "MovieAtRoot.Part1.mkv")),
-      await FileMedia.from(join(dirPath, "MovieAtRoot.Part2.mkv")),
-      await FileMedia.from(
-        join(dirPath, "Bonus/MovieInNestedFolder.Bonus.mkv")
-      ),
+      await FileMedia.from(join(dirPath, "Movie.mkv")),
+      await FileMedia.from(join(dirPath, "Bonus/Bonus1.mkv")),
+      await FileMedia.from(join(dirPath, "Bonus/Bonus2.mkv")),
     ]);
   });
   test("Get no media file from path of a non-media file", async () => {

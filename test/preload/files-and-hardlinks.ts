@@ -42,12 +42,9 @@ beforeAll(() => {
     join(fakeTorrentMovieDir, "MovieWithLinks.mkv"),
     join(fakeTorrentMovieDir, "MovieWithLinksInAFolder/Movie.mkv"),
     join(fakeTorrentMovieDir, "MovieWithoutLinksButUnwatchExtension.iso"),
-    join(fakeTorrentMovieDir, "MoviesNestedInFolders/MovieAtRoot.Part1.mkv"),
-    join(fakeTorrentMovieDir, "MoviesNestedInFolders/MovieAtRoot.Part2.mkv"),
-    join(
-      fakeTorrentMovieDir,
-      "MoviesNestedInFolders/Bonus/MovieInNestedFolder.Bonus.mkv"
-    ),
+    join(fakeTorrentMovieDir, "MoviesNestedInFolders/Movie.mkv"),
+    join(fakeTorrentMovieDir, "MoviesNestedInFolders/Bonus/Bonus1.mkv"),
+    join(fakeTorrentMovieDir, "MoviesNestedInFolders/Bonus/Bonus2.mkv"),
     join(fakeTorrentMovieDir, "MovieWithoutLinksButProtected.mkv"),
     join(fakeTorrentMovieDir, "MovieWithLinksButPreviouslyTaggedToDelete.mkv"),
     join(testTempDir, "completed", "Uncategorized.mkv"),
@@ -89,27 +86,22 @@ beforeAll(() => {
   ]);
 
   // Create torrent cross-seed file
-  mkdirsSyncRecursively([
-    join(fakeTorrentCrossSeedDir, "SeriesWithLinks.S01.HardCopy1"),
-  ]);
+  mkdirsSyncRecursively([join(fakeTorrentCrossSeedDir, "SeriesWithLinks.S01")]);
   writeFilesSyncWithRandomData([
     join(fakeTorrentCrossSeedDir, "MovieNoMoreLinked.HardCopy1.mkv"),
   ]);
 
   // Create radarr dirs
   mkdirsSyncRecursively([
-    join(fakeRadarrDir, "MovieWithLinks"),
-    join(fakeRadarrDir, "MovieWithLinksInAFolder"),
-    join(fakeRadarrDir, "MovieWithoutLinksButUnwatchExtension"),
-    join(fakeRadarrDir, "MovieWithoutHardLink"),
+    join(fakeRadarrDir, "Movie With Links (2020)"),
+    join(fakeRadarrDir, "Movie Without Files (2036)"),
+    join(fakeRadarrDir, "Movie With Links In A Folder (1991)"),
+    join(fakeRadarrDir, "Movie Without Hard Link (2000)"),
+    join(fakeRadarrDir, "Movie Without Links But Unwatch Extension (2005)"),
   ]);
 
   // Create cross-seed hard linked copy
   generateHardLinkCopies([
-    {
-      target: join(fakeTorrentMovieDir, "MovieWithLinks.mkv"),
-      link: join(fakeTorrentCrossSeedDir, "MovieWithLinks.HardCopy1.mkv"),
-    },
     {
       target: join(fakeTorrentMovieDir, "MovieWithLinks.mkv"),
       link: join(fakeTorrentCrossSeedDir, "MovieWithLinks.HardCopy2.mkv"),
@@ -119,24 +111,28 @@ beforeAll(() => {
       link: join(fakeTorrentCrossSeedDir, "MovieWithLinks.HardCopy3.mkv"),
     },
     {
+      target: join(fakeTorrentMovieDir, "MovieWithLinks.mkv"),
+      link: join(fakeTorrentCrossSeedDir, "MovieWithLinks.HardCopy4.mkv"),
+    },
+    {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 01.mkv"),
       link: join(
         fakeTorrentCrossSeedDir,
-        "SeriesWithLinks.S01.HardCopy1/Episode 01.mkv"
+        "SeriesWithLinks.S01/Episode 01.HardCopy2.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 02.mkv"),
       link: join(
         fakeTorrentCrossSeedDir,
-        "SeriesWithLinks.S01.HardCopy1/Episode 02.mkv"
+        "SeriesWithLinks.S01/Episode 02.HardCopy2.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 03.mkv"),
       link: join(
         fakeTorrentCrossSeedDir,
-        "SeriesWithLinks.S01.HardCopy1/Episode 03.mkv"
+        "SeriesWithLinks.S01/Episode 03.HardCopy2.mkv"
       ),
     },
   ]);
@@ -145,11 +141,14 @@ beforeAll(() => {
   generateHardLinkCopies([
     {
       target: join(fakeTorrentMovieDir, "MovieWithLinks.mkv"),
-      link: join(fakeRadarrDir, "MovieWithLinks/Movie.Link1.mkv"),
+      link: join(fakeRadarrDir, "Movie With Links (2020)/Movie.HardCopy1.mkv"),
     },
     {
       target: join(fakeTorrentMovieDir, "MovieWithLinksInAFolder/Movie.mkv"),
-      link: join(fakeRadarrDir, "MovieWithLinksInAFolder/Movie.Link1.mkv"),
+      link: join(
+        fakeRadarrDir,
+        "Movie With Links In A Folder (1991)/Movie.HardCopy1.mkv"
+      ),
     },
     {
       target: join(
@@ -158,20 +157,20 @@ beforeAll(() => {
       ),
       link: join(
         fakeRadarrDir,
-        "MovieWithoutLinksButUnwatchExtension/Movie.Link1.iso"
+        "Movie Without Links But Unwatch Extension (2005)/Movie.HardCopy1.iso"
       ),
     },
   ]);
 
   // Create a radarr file witout hard link
   writeFilesSyncWithRandomData([
-    join(fakeRadarrDir, "MovieWithoutHardLink/Movie.NoLink.mkv"),
+    join(fakeRadarrDir, "Movie Without Hard Link (2000)/Movie.NoLink.mkv"),
   ]);
 
   // create sonarr dirs
   mkdirsSyncRecursively([
-    join(fakeSonarrDir, "SeriesWithLinks/Season 01"),
-    join(fakeSonarrDir, "SeriesWithLinks/Season 02"),
+    join(fakeSonarrDir, "Series With Links (1901)/Season 01"),
+    join(fakeSonarrDir, "Series With Links (1901)/Season 02"),
   ]);
 
   // create sonarr hard linked copy
@@ -180,42 +179,42 @@ beforeAll(() => {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 01.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 01/Episode 01.Link1.mkv"
+        "Series With Links (1901)/Season 01/Episode 01.HardCopy1.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 02.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 01/Episode 02.Link1.mkv"
+        "Series With Links (1901)/Season 01/Episode 02.HardCopy1.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S01/Episode 03.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 01/Episode 03.Link1.mkv"
+        "Series With Links (1901)/Season 01/Episode 03.HardCopy1.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S02/Episode 01.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 02/Episode 01.Link1.mkv"
+        "Series With Links (1901)/Season 02/Episode 01.HardCopy1.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S02/Episode 02.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 02/Episode 02.Link1.mkv"
+        "Series With Links (1901)/Season 02/Episode 02.HardCopy1.mkv"
       ),
     },
     {
       target: join(fakeTorrentSeriesDir, "SeriesWithLinks.S02/Episode 03.mkv"),
       link: join(
         fakeSonarrDir,
-        "SeriesWithLinks/Season 02/Episode 03.Link1.mkv"
+        "Series With Links (1901)/Season 02/Episode 03.HardCopy1.mkv"
       ),
     },
   ]);
