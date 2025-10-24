@@ -25,7 +25,7 @@ describe("Hard linking check", () => {
     );
     expect(
       await torrentFile.isHardLinkedWith(
-        join(fakeRadarrDir, "MovieWithoutHardLink.mkv")
+        join(fakeRadarrDir, "MovieWithoutHardLink/Movie.NoLink.mkv")
       )
     ).toBe(false);
   });
