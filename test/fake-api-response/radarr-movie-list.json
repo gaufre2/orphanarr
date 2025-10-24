@@ -1,0 +1,57 @@
+[
+  {
+    "id": 28,
+    "title": "Movie With Links",
+    "year": 2020,
+    "path": "/media/movies/Movie With Links (2020)",
+    "hasFile": true,
+    "movieFile": {
+      "id": 774,
+      "relativePath": "Movie.HardCopy1.mkv",
+      "path": "/media/movies/Movie With Links (2020)/Movie.HardCopy1.mkv"
+    }
+  },
+  {
+    "id": 1023,
+    "title": "Movie Without Files",
+    "year": 2036,
+    "path": "/media/movies/Movie Without Files (2036)",
+    "hasFile": false
+  },
+  {
+    "id": 203,
+    "title": "Movie With Links In A Folder",
+    "year": 1991,
+    "path": "/media/movies/Movie With Links In A Folder (1991)",
+    "hasFile": true,
+    "movieFile": {
+      "id": 135,
+      "relativePath": "Movie.HardCopy1.mkv",
+      "path": "/media/movies/Movie With Links In A Folder (1991)/Movie.HardCopy1.mkv"
+    }
+  },
+  {
+    "id": 543,
+    "title": "Movie Without Hard Link",
+    "year": 2000,
+    "path": "/media/movies/Movie Without Hard Link (2000)",
+    "hasFile": true,
+    "movieFile": {
+      "id": 997,
+      "relativePath": "Movie.NoLink.mkv",
+      "path": "/media/movies/Movie Without Hard Link (2000)/Movie.NoLink.mkv"
+    }
+  },
+  {
+    "id": 203,
+    "title": "Movie Without Links But Unwatch Extension",
+    "year": 2005,
+    "path": "/media/movies/Movie Without Links But Unwatch Extension (2005)",
+    "hasFile": true,
+    "movieFile": {
+      "id": 436,
+      "relativePath": "Movie.HardCopy1.iso",
+      "path": "/media/movies/Movie Without Links But Unwatch Extension (2005)/Movie.HardCopy1.iso"
+    }
+  }
+]
