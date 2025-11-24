@@ -34,7 +34,7 @@
         "redhat.vscode-yaml"
       ]
     }
-  },
+  }
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // TODO wait for the PR: https://github.com/devcontainers-extra/features/pull/149
