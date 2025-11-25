@@ -1,38 +1,41 @@
-import { QBittorrent, type Torrent } from "@ctrl/qbittorrent";
+import {
+  QBittorrent as QBittorrentClient,
+  type Torrent as QBittorrentTorrent,
+} from "@ctrl/qbittorrent";
 import type { TorrentClientConfig } from "@ctrl/shared-torrent";
 import { FileMedia } from "./file";
 
-export class TorrentClient extends QBittorrent {
-  fakeTorrents: Torrent[] | undefined;
+export class TorrentClient extends QBittorrentClient {
+  fakeTorrents: QBittorrentTorrent[] | undefined;
 
   constructor(
     options?: Partial<TorrentClientConfig>,
-    fakeTorrents?: Torrent[]
+    fakeTorrents?: QBittorrentTorrent[]
   ) {
     super(options);
     this.fakeTorrents = fakeTorrents;
   }
 
-  async listInfoTorrents(): Promise<InfoTorrent[]> {
-    let allTorrents: Torrent[];
+  async getTorrents(): Promise<Torrent[]> {
+    let allTorrents: QBittorrentTorrent[];
     if (this.fakeTorrents) {
       allTorrents = this.fakeTorrents;
     } else {
       allTorrents = await this.listTorrents();
     }
 
-    return allTorrents.map((torrent) => new InfoTorrent(torrent));
+    return allTorrents.map((torrent) => new Torrent(torrent));
   }
 }
 
-export class InfoTorrent {
+export class Torrent {
   readonly name: string;
   readonly category: string;
   readonly tags: string[];
   readonly contentPath: string;
   readonly hash: string;
 
-  constructor(torrent: Torrent) {
+  constructor(torrent: QBittorrentTorrent) {
     this.name = torrent.name;
     this.category = torrent.category;
     this.tags = torrent.tags.split(",").map((item) => item.trim());
@@ -42,18 +45,18 @@ export class InfoTorrent {
 }
 
 export async function getMediaTorrentsToWatch(
-  torrents: InfoTorrent[],
+  torrents: Torrent[],
   criteria?: TorrentFilterCriteria
 ): Promise<MediaTorrent[]> {
   const mediaTorrents = await Promise.all(
     torrents
       .filter((torrent) => meetsAllCriteria(torrent, criteria))
-      .map(async (torrent) => MediaTorrent.from(torrent))
+      .map(async (filteredTorrent) => MediaTorrent.from(filteredTorrent))
   );
   return mediaTorrents;
 
   function meetsAllCriteria(
-    torrent: InfoTorrent,
+    torrent: Torrent,
     criteria?: TorrentFilterCriteria
   ): boolean {
     return (
@@ -63,7 +66,7 @@ export async function getMediaTorrentsToWatch(
   }
 
   function meetsCategoryRequirement(
-    torrent: InfoTorrent,
+    torrent: Torrent,
     criteria?: TorrentFilterCriteria
   ): boolean {
     if (!criteria) return true;
@@ -73,7 +76,7 @@ export async function getMediaTorrentsToWatch(
   }
 
   function meetsTagExclusionRequirement(
-    torrent: InfoTorrent,
+    torrent: Torrent,
     criteria?: TorrentFilterCriteria
   ): boolean {
     if (!criteria) return true;
@@ -87,15 +90,15 @@ export async function getMediaTorrentsToWatch(
 }
 
 export class MediaTorrent {
-  readonly info: InfoTorrent;
+  readonly torrent: Torrent;
   readonly mediaFiles: FileMedia[] | undefined;
 
-  private constructor(info: InfoTorrent, mediaFiles?: FileMedia[]) {
-    this.info = info;
+  private constructor(torrent: Torrent, mediaFiles?: FileMedia[]) {
+    this.torrent = torrent;
     this.mediaFiles = mediaFiles;
   }
 
-  static async from(torrent: InfoTorrent): Promise<MediaTorrent> {
+  static async from(torrent: Torrent): Promise<MediaTorrent> {
     const mediaFiles = await FileMedia.collectMediaFiles(torrent.contentPath);
     return new MediaTorrent(torrent, mediaFiles);
   }

@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll } from "bun:test";
 import {
   getMediaTorrentsToWatch,
-  InfoTorrent,
+  Torrent,
   MediaTorrent,
   TorrentClient,
   type TorrentFilterCriteria,
@@ -9,10 +9,10 @@ import {
 import { fakeTorrents } from "../test/preload/torrents";
 import { basename } from "node:path";
 
-let fakeInfoTorrents: InfoTorrent[];
+let fakeInfoTorrents: Torrent[];
 
 beforeAll(() => {
-  fakeInfoTorrents = fakeTorrents.map((torrent) => new InfoTorrent(torrent));
+  fakeInfoTorrents = fakeTorrents.map((torrent) => new Torrent(torrent));
 });
 
 describe("Torrents from qbittorrent", () => {
@@ -21,14 +21,14 @@ describe("Torrents from qbittorrent", () => {
       const client = new TorrentClient();
       expect(client.login()).rejects.toThrowError();
     });
-    test("Empty torrrent client should return empty array", async () => {
+    test("Empty torrent client should return empty array", async () => {
       const client = new TorrentClient(undefined, []);
-      const torrents = await client.listInfoTorrents();
+      const torrents = await client.getTorrents();
       expect(torrents).toBeArrayOfSize(0);
     });
     test("Return faked info torrents", async () => {
       const client = new TorrentClient(undefined, fakeTorrents);
-      const torrents = await client.listInfoTorrents();
+      const torrents = await client.getTorrents();
       expect(torrents).toBeArrayOfSize(fakeTorrents.length);
     });
   });

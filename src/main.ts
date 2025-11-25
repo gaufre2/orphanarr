@@ -18,9 +18,9 @@ async function main() {
   };
 
   const torrentClient = new TorrentClient(clientOptions);
-  const allTorrents = await torrentClient.listInfoTorrents();
+  const allTorrents = await torrentClient.getTorrents();
 
-  const watchedTorrents = await getMediaTorrentsToWatch(
+  const watchedMediaTorrents = await getMediaTorrentsToWatch(
     allTorrents,
     getTorrentsFilter()
   );
