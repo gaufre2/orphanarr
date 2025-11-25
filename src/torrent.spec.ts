@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeAll } from "bun:test";
 import {
-  getAllTorrents,
   getMediaTorrentsToWatch,
   InfoTorrent,
   MediaTorrent,
+  TorrentClient,
   type TorrentFilterCriteria,
 } from "./torrent";
 import { fakeTorrents } from "../test/preload/torrents";
@@ -17,11 +17,18 @@ beforeAll(() => {
 
 describe("Torrents from qbittorrent", () => {
   describe("Get torrents from qbittorrent", () => {
-    test("Throw error if note possible to connect to qbittorrent", async () => {
-      expect(getAllTorrents({})).rejects.toThrowError();
+    test("Throw error if not possible to connect to qbittorrent", async () => {
+      const client = new TorrentClient();
+      expect(client.login()).rejects.toThrowError();
+    });
+    test("Empty torrrent client should return empty array", async () => {
+      const client = new TorrentClient(undefined, []);
+      const torrents = await client.listInfoTorrents();
+      expect(torrents).toBeArrayOfSize(0);
     });
     test("Return faked info torrents", async () => {
-      const torrents = await getAllTorrents(fakeTorrents);
+      const client = new TorrentClient(undefined, fakeTorrents);
+      const torrents = await client.listInfoTorrents();
       expect(torrents).toBeArrayOfSize(fakeTorrents.length);
     });
   });

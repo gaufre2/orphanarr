@@ -2,25 +2,43 @@ import { QBittorrent, type Torrent } from "@ctrl/qbittorrent";
 import type { TorrentClientConfig } from "@ctrl/shared-torrent";
 import { FileMedia } from "./file";
 
-export async function getAllTorrents(
-  options: Partial<TorrentClientConfig>
-): Promise<InfoTorrent[]>;
-export async function getAllTorrents(
-  torrents: Torrent[]
-): Promise<InfoTorrent[]>;
-export async function getAllTorrents(
-  optionsOrTorrents: Partial<TorrentClientConfig> | Torrent[]
-): Promise<InfoTorrent[]> {
-  let allTorrents: Torrent[];
+export class TorrentClient extends QBittorrent {
+  fakeTorrents: Torrent[] | undefined;
 
-  if (optionsOrTorrents instanceof Array) {
-    allTorrents = optionsOrTorrents;
-  } else {
-    const client = new QBittorrent(optionsOrTorrents);
-    allTorrents = await client.listTorrents();
+  constructor(
+    options?: Partial<TorrentClientConfig>,
+    fakeTorrents?: Torrent[]
+  ) {
+    super(options);
+    this.fakeTorrents = fakeTorrents;
   }
 
-  return allTorrents.map((torrent) => new InfoTorrent(torrent));
+  async listInfoTorrents(): Promise<InfoTorrent[]> {
+    let allTorrents: Torrent[];
+    if (this.fakeTorrents) {
+      allTorrents = this.fakeTorrents;
+    } else {
+      allTorrents = await this.listTorrents();
+    }
+
+    return allTorrents.map((torrent) => new InfoTorrent(torrent));
+  }
+}
+
+export class InfoTorrent {
+  readonly name: string;
+  readonly category: string;
+  readonly tags: string[];
+  readonly contentPath: string;
+  readonly hash: string;
+
+  constructor(torrent: Torrent) {
+    this.name = torrent.name;
+    this.category = torrent.category;
+    this.tags = torrent.tags.split(",").map((item) => item.trim());
+    this.contentPath = torrent.content_path;
+    this.hash = torrent.hash;
+  }
 }
 
 export async function getMediaTorrentsToWatch(
@@ -80,22 +98,6 @@ export class MediaTorrent {
   static async from(torrent: InfoTorrent): Promise<MediaTorrent> {
     const mediaFiles = await FileMedia.collectMediaFiles(torrent.contentPath);
     return new MediaTorrent(torrent, mediaFiles);
-  }
-}
-
-export class InfoTorrent {
-  readonly name: string;
-  readonly category: string;
-  readonly tags: string[];
-  readonly contentPath: string;
-  readonly hash: string;
-
-  constructor(torrent: Torrent) {
-    this.name = torrent.name;
-    this.category = torrent.category;
-    this.tags = torrent.tags.split(",").map((item) => item.trim());
-    this.contentPath = torrent.content_path;
-    this.hash = torrent.hash;
   }
 }
 

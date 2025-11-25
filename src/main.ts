@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {
-  getAllTorrents,
   getMediaTorrentsToWatch,
+  TorrentClient,
   type TorrentFilterCriteria,
 } from "./torrent";
 
@@ -17,7 +17,8 @@ async function main() {
     password: process.env.QBITTORRENT_PASSWORD,
   };
 
-  const allTorrents = await getAllTorrents(clientOptions);
+  const torrentClient = new TorrentClient(clientOptions);
+  const allTorrents = await torrentClient.listInfoTorrents();
 
   const watchedTorrents = await getMediaTorrentsToWatch(
     allTorrents,
@@ -27,7 +28,9 @@ async function main() {
   //TODO Get files stats from Sonarr and Radarr
   //TODO Get orphan files by comparing files stats from Sonarr, Radarr and Torrents
   //TODO Set orphan tag to torrents
-  //TODO Close connection
+  //TODO Close connections
+  torrentClient.logout();
+
   //TODO Print a report
 }
 
