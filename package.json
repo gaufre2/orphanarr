@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "bun run src/main.ts",
-    "watch": "bun run --watch src/main.ts"
+    "watch": "bun run --watch src/main.ts",
+    "test": "bun test --watch"
   },
   "dependencies": {
     "@ctrl/qbittorrent": "^9.10.0",
