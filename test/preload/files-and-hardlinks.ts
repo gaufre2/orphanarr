@@ -1,6 +1,6 @@
 import { afterAll, beforeAll } from "bun:test";
 import { execSync } from "node:child_process";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -12,12 +12,10 @@ export let fakeRadarrDir: string;
 export let fakeSonarrDir: string;
 
 beforeAll(() => {
-  // Create unique test directory for each test
-  testTempDir = join(
-    tmpdir(),
-    `test-${Date.now()}-${Math.random().toString(36).substring(7)}`
-  );
+  // Create test directory for each test
+  testTempDir = mkdtempSync(join(tmpdir(), "test-files-and-hardlinks-"));
 
+  // Creation of fake directories
   fakeTorrentMovieDir = join(testTempDir, "completed/movies");
   fakeTorrentSeriesDir = join(testTempDir, "completed/series");
   fakeTorrentCrossSeedDir = join(testTempDir, "completed/cross-seed");
@@ -219,6 +217,17 @@ beforeAll(() => {
     },
   ]);
 
+  // save generated files tree
+  const filesTree = execSync(`tree -a "${testTempDir}"`).toString();
+  const pathFileTree = join("test", "auto-generated");
+  mkdirsSyncRecursively([pathFileTree]);
+  writeFileSync(join(pathFileTree, "last-files-tree.txt"), filesTree);
+
+  // login
+  console.log(
+    `Before All Tests: Generated files and hard links in "${testTempDir}"\n`
+  );
+
   function writeFilesSyncWithRandomData(filePaths: string[]): void {
     filePaths.forEach((filePath) =>
       writeFileSync(filePath, generateRandomData(10))
@@ -245,16 +254,10 @@ beforeAll(() => {
   function generateHardLinkCopy(hardLink: HardLinkCopies): void {
     execSync(`ln "${hardLink.target}" "${hardLink.link}"`);
   }
-
-  // Prompt generated files tree
-  console.log(
-    "Before All Tests: Generated files tree in testTempDir:\n",
-    execSync(`tree -a "${testTempDir}"`).toString()
-  );
 });
 
 afterAll(() => {
   rmSync(testTempDir, { recursive: true, force: true });
 
-  console.log(`After All Tests: Cleanup "${testTempDir}"`);
+  console.log(`\nAfter All Tests: Cleanup "${testTempDir}"`);
 });

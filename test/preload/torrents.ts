@@ -1,10 +1,10 @@
 import { beforeAll } from "bun:test";
-import type { Torrent } from "@ctrl/qbittorrent";
+import type { Torrent as QBittorrentTorrent } from "@ctrl/qbittorrent";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { testTempDir } from "./files-and-hardlinks";
 
-export let fakeTorrents: Torrent[];
+export let fakeTorrents: QBittorrentTorrent[];
 
 beforeAll(() => {
   fakeTorrents = JSON.parse(
