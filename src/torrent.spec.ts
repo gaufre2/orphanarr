@@ -16,18 +16,20 @@ beforeAll(() => {
 });
 
 describe("Torrents from qbittorrent", () => {
+  const fakeConfig = {
+    baseUrl: "http://localhost:8080",
+    username: "johndoe",
+    password: "fake-password",
+  };
+
   describe("Get torrents from qbittorrent", () => {
-    test("Throw error if not possible to connect to qbittorrent", async () => {
-      const client = new TorrentClient();
-      expect(client.login()).rejects.toThrowError();
-    });
     test("Empty torrent client should return empty array", async () => {
-      const client = new TorrentClient(undefined, []);
+      const client = new TorrentClient(fakeConfig, []);
       const torrents = await client.getTorrents();
       expect(torrents).toBeArrayOfSize(0);
     });
-    test("Return faked info torrents", async () => {
-      const client = new TorrentClient(undefined, fakeTorrents);
+    test("Return faked torrents", async () => {
+      const client = new TorrentClient(fakeConfig, fakeTorrents);
       const torrents = await client.getTorrents();
       expect(torrents).toBeArrayOfSize(fakeTorrents.length);
     });

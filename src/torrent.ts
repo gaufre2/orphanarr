@@ -1,31 +1,39 @@
-import {
-  QBittorrent as QBittorrentClient,
-  type Torrent as QBittorrentTorrent,
-} from "@ctrl/qbittorrent";
-import type { TorrentClientConfig } from "@ctrl/shared-torrent";
+import { QBittorrent } from "@ctrl/qbittorrent";
 import { FileMedia } from "./file";
 
-export class TorrentClient extends QBittorrentClient {
-  fakeTorrents: QBittorrentTorrent[] | undefined;
+export class TorrentClient {
+  private client: QBittorrent;
+  private fakeTorrents?: TorrentResponse[];
 
-  constructor(
-    options?: Partial<TorrentClientConfig>,
-    fakeTorrents?: QBittorrentTorrent[]
-  ) {
-    super(options);
+  constructor(options: ClientConfig, fakeTorrents?: TorrentResponse[]) {
+    this.client = new QBittorrent(options);
     this.fakeTorrents = fakeTorrents;
   }
 
   async getTorrents(): Promise<Torrent[]> {
-    let allTorrents: QBittorrentTorrent[];
+    let allTorrents: TorrentResponse[];
     if (this.fakeTorrents) {
       allTorrents = this.fakeTorrents;
     } else {
-      allTorrents = await this.listTorrents();
+      allTorrents = await this.client.listTorrents();
     }
 
     return allTorrents.map((torrent) => new Torrent(torrent));
   }
+}
+
+export interface TorrentResponse {
+  name: string;
+  category: string;
+  tags: string;
+  content_path: string;
+  hash: string;
+}
+
+export interface ClientConfig {
+  baseUrl: string;
+  username: string;
+  password: string;
 }
 
 export class Torrent {
@@ -35,7 +43,7 @@ export class Torrent {
   readonly contentPath: string;
   readonly hash: string;
 
-  constructor(torrent: QBittorrentTorrent) {
+  constructor(torrent: TorrentResponse) {
     this.name = torrent.name;
     this.category = torrent.category;
     this.tags = torrent.tags.split(",").map((item) => item.trim());
